@@ -1,26 +1,536 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-primary: #020202;
+  --bg-secondary: #0a0a0a;
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-highlight: rgba(255, 255, 255, 0.15);
+  --text-primary: rgba(255, 255, 255, 0.95);
+  --text-secondary: rgba(255, 255, 255, 0.5);
+  --accent-glow: rgba(138, 100, 255, 0.3);
+  --accent-color: #8a64ff;
+  --search-glow: rgba(138, 100, 255, 0.15);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== Hero Section Wrapper ===== */
+.hero-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;    /* critical — this is what actually clips the ring */
+}
+
+/* ===== Spline 3D Background ===== */
+.spline-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.spline-fullscreen {
+  width: 100%;
+  height: 100%;
+}
+
+.spline-wrapper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.spline-loading {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-primary);
+  z-index: 0;
+}
+
+.spline-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  z-index: 1;
+}
+
+.spline-loader-spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(138, 100, 255, 0.2);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: spline-spin 0.8s linear infinite;
+}
+
+@keyframes spline-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== Hero O Ring ===== */
+
+/* Wrapper covers full viewport — clip boundary goes off-screen */
+.hero-ring-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;        /* matches parent hero section exactly */
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;    /* clips the ring at hero boundary, no rectangular glow */
+}
+
+.hero-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -40%);
+  width: 105vh;
+  height: 105vh;
+  border-radius: 50%;
+  border: clamp(50px, 8vw, 100px) solid rgba(255, 255, 255, 0.95);
+  pointer-events: none;
+  filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.4))
+          drop-shadow(0 0 60px rgba(255, 255, 255, 0.15));
+  animation: hero-ring-glow 4s ease-in-out infinite alternate;
+}
+
+/* Secondary ambient glow layer using radial gradient */
+.hero-ring::before {
+  content: '';
+  position: absolute;
+  inset: -50px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 80%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes hero-ring-glow {
+  0% {
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3))
+            drop-shadow(0 0 35px rgba(255, 255, 255, 0.08));
+    opacity: 0.8;
+    border-color: rgba(255, 255, 255, 0.9);
+  }
+  50% {
+    filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.5))
+            drop-shadow(0 0 65px rgba(255, 255, 255, 0.12))
+            brightness(1.2);
+    opacity: 0.95;
+    border-color: rgba(255, 255, 255, 1);
+  }
+  100% {
+    filter: drop-shadow(0 0 70px rgba(255, 255, 255, 0.7))
+            drop-shadow(0 0 110px rgba(255, 255, 255, 0.2))
+            brightness(1.5);
+    opacity: 1;
+    border-color: #fff;
+  }
+}
+
+/* ===== Grid Overlay ===== */
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
+}
+
+/* Navbar Search */
+.nav-search {
+  flex: 1;
+  max-width: 280px;
+  position: relative;
+}
+
+.nav-search-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.3s ease;
+}
+
+.nav-search-inner:focus-within {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(138, 100, 255, 0.3);
+  box-shadow: 0 0 20px -8px rgba(138, 100, 255, 0.2);
+}
+
+.nav-search-icon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+}
+
+.nav-search-inner:focus-within .nav-search-icon {
+  color: var(--accent-color);
+}
+
+.nav-search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  caret-color: var(--accent-color);
+  min-width: 0;
+}
+
+.nav-search-input::placeholder {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.nav-search-kbd {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  opacity: 0.4;
+}
+
+.nav-search-kbd kbd {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 500;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  line-height: 1;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes shine-border-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== Floating Badges ===== */
+@keyframes floatY {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float-1 {
+  animation: floatY 6s ease-in-out infinite;
+}
+.animate-float-2 {
+  animation: floatY 7s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+.animate-float-3 {
+  animation: floatY 8s ease-in-out infinite;
+  animation-delay: 3s;
+}
+
+/* ===== Marquee ===== */
+@keyframes marquee-y {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
+.animate-marquee-y {
+  animation: marquee-y 15s linear infinite;
+}
+
+/* ===== Keyboard Dock ===== */
+.keyboard-dock {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 24px 24px;
+  pointer-events: auto;
+}
+
+.keyboard-dismiss {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 8px;
+  margin-left: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.25s ease;
+  pointer-events: auto;
+}
+
+.keyboard-dismiss:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.keyboard-dismiss svg {
+  width: 18px;
+  height: 18px;
+}
+
+.keyboard-glass {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 -8px 64px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  padding: 24px 32px;
+  position: relative;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.keyboard-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  border-radius: 24px 24px 0 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+}
+
+.keyboard-label {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Keyboard Animations */
+.keyboard-enter {
+  animation: keyboardSlideIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.keyboard-exit {
+  animation: keyboardSlideOut 0.3s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+
+@keyframes keyboardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes keyboardSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+/* ===== Orbit Animation ===== */
+@keyframes orbit {
+  0% {
+    transform: rotate(0deg) translateY(calc(var(--radius) * 1px)) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateY(calc(var(--radius) * 1px)) rotate(-360deg);
+  }
+}
+
+.animate-orbit {
+  animation: orbit calc(var(--duration) * 1s) linear infinite;
+  animation-delay: calc(var(--delay) * 1s);
+  animation-direction: var(--direction, normal);
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ===== Selection ===== */
+::selection {
+  background: rgba(138, 100, 255, 0.3);
+  color: white;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .navbar-inner {
+    padding: 8px 14px;
+    gap: 8px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .nav-search {
+    max-width: none;
+  }
+
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+}
+
+/* ===== Custom Glass Card (User Reference) ===== */
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(21px);
+  -webkit-backdrop-filter: blur(21px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 0px 0px rgba(255, 255, 255, 0);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+}
+
+.glass-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.8),
+    transparent,
+    rgba(255, 255, 255, 0.3)
+  );
 }

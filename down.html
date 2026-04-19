@@ -1,0 +1,904 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    border-bottom: 1px solid #1a1a1a;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 1.5px solid #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+    letter-spacing: -0.5px;
+  }
+  .nav-links { display: flex; gap: 2.5rem; }
+  .nav-links a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+  .nav-links a:hover { color: #fff; }
+  .nav-cta {
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 0.55rem 1.4rem;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: #e0e0e0; transform: scale(1.03); }
+
+  /* ─── SECTION STYLES ─── */
+  section { padding: 7rem 3rem; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    color: #fff;
+  }
+  .section-title span { color: #555; }
+  .section-sub {
+    font-size: 16px;
+    color: #666;
+    margin-top: 1rem;
+    max-width: 500px;
+    line-height: 1.7;
+  }
+
+  /* ─── FEATURES ─── */
+  #features { background: #000; }
+
+  .features-header { text-align: center; margin-bottom: 5rem; }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: #1a1a1a;
+    border: 1.5px solid #1a1a1a;
+    border-radius: 16px;
+    overflow: hidden;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    background: #000;
+    padding: 2.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+    transition: background 0.35s;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #333, transparent);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+  }
+  .feature-card:hover { background: #0a0a0a; }
+  .feature-card:hover::before { transform: scaleX(1); }
+
+  .feature-icon {
+    width: 44px; height: 44px;
+    border: 1px solid #222;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .feature-card:hover .feature-icon { border-color: #444; }
+
+  .feature-icon svg { width: 20px; height: 20px; stroke: #888; fill: none; stroke-width: 1.5; transition: stroke 0.3s; }
+  .feature-card:hover .feature-icon svg { stroke: #fff; }
+
+  .feature-card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.3px;
+  }
+  .feature-card p {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.7;
+  }
+
+  .feature-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #333;
+    border: 1px solid #222;
+    border-radius: 4px;
+    padding: 3px 8px;
+    margin-top: 1rem;
+    transition: color 0.3s, border-color 0.3s;
+  }
+  .feature-card:hover .feature-tag { color: #888; border-color: #444; }
+
+  /* ─── MARQUEE ─── */
+  .marquee-wrap {
+    border-top: 1px solid #111;
+    border-bottom: 1px solid #111;
+    padding: 1.2rem 0;
+    overflow: hidden;
+    background: #000;
+  }
+  .marquee-track {
+    display: flex;
+    gap: 3rem;
+    animation: marquee 20s linear infinite;
+    white-space: nowrap;
+    width: max-content;
+  }
+  .marquee-item {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .marquee-item::before {
+    content: '';
+    display: inline-block;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: #444;
+  }
+  @keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ─── PRICING ─── */
+  #pricing { background: #000; position: relative; }
+
+  .pricing-header { text-align: center; margin-bottom: 5rem; }
+
+  .pricing-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .toggle-label { font-size: 13px; color: #555; }
+  .toggle-label.active { color: #fff; }
+  .toggle-switch {
+    width: 44px; height: 24px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 999px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .toggle-switch.annual { background: #222; }
+  .toggle-knob {
+    width: 18px; height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px; left: 2px;
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .toggle-switch.annual .toggle-knob { transform: translateX(20px); }
+
+  .badge-save {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: #fff;
+    color: #000;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-left: 0.3rem;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: #1a1a1a;
+    border: 1.5px solid #1a1a1a;
+    border-radius: 20px;
+    overflow: hidden;
+    max-width: 1000px;
+    margin: 0 auto;
+    perspective: 1000px;
+  }
+
+  .plan-card {
+    background: #000;
+    padding: 2.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.35s, transform 0.4s cubic-bezier(0.34,1.4,0.64,1);
+    transform-origin: center bottom;
+  }
+  .plan-card.featured {
+    background: #060606;
+  }
+  .plan-card:hover {
+    background: #0d0d0d;
+    transform: translateY(-6px) scale(1.01);
+    z-index: 2;
+  }
+  .plan-card.featured:hover {
+    background: #111;
+  }
+
+  .plan-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #000;
+    background: #fff;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+  }
+  .plan-badge-ghost {
+    display: inline-block;
+    height: 26px;
+    margin-bottom: 1.5rem;
+  }
+
+  .plan-name {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 0.5rem;
+  }
+
+  .plan-price-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin: 1.2rem 0 0.4rem;
+  }
+  .plan-currency { font-size: 18px; font-weight: 600; color: #666; }
+  .plan-price {
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: -4px;
+    color: #fff;
+    line-height: 1;
+    transition: all 0.3s;
+  }
+  .plan-period { font-size: 13px; color: #444; align-self: flex-end; margin-bottom: 6px; }
+
+  .plan-tagline {
+    font-size: 13px;
+    color: #444;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+  }
+
+  .plan-divider {
+    width: 100%;
+    height: 1px;
+    background: #111;
+    margin-bottom: 1.5rem;
+  }
+
+  .plan-features { list-style: none; margin-bottom: 2rem; }
+  .plan-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: #555;
+    padding: 5px 0;
+    transition: color 0.2s;
+  }
+  .plan-card:hover .plan-features li { color: #888; }
+  .plan-features li .check {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .plan-features li .check svg { width: 16px; height: 16px; stroke: #333; fill: none; stroke-width: 2; }
+  .plan-card.featured .plan-features li .check svg { stroke: #888; }
+
+  .plan-btn {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+  .plan-btn-outline {
+    background: transparent;
+    border: 1px solid #222;
+    color: #555;
+  }
+  .plan-btn-outline:hover { border-color: #555; color: #fff; }
+  .plan-btn-filled {
+    background: #fff;
+    border: 1px solid #fff;
+    color: #000;
+  }
+  .plan-btn-filled:hover { background: #e0e0e0; }
+
+  /* 3D tilt canvas */
+  .plan-card { transform-style: preserve-3d; }
+  .plan-card-inner { position: relative; z-index: 1; }
+
+  /* ─── STATS STRIP ─── */
+  .stats-strip {
+    background: #050505;
+    border-top: 1px solid #111;
+    border-bottom: 1px solid #111;
+    padding: 3rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -3px;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .stat-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #333;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #000;
+    border-top: 1px solid #111;
+    padding: 5rem 3rem 3rem;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 4rem;
+  }
+
+  .footer-brand .logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .footer-brand .logo-circle {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid #333;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px;
+    color: #fff;
+  }
+  .footer-brand .logo-name {
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.5px;
+  }
+  .footer-brand p {
+    font-size: 13px;
+    color: #444;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    max-width: 260px;
+  }
+
+  .footer-socials {
+    display: flex;
+    gap: 0.75rem;
+  }
+  .social-btn {
+    width: 34px; height: 34px;
+    border: 1px solid #1a1a1a;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    text-decoration: none;
+  }
+  .social-btn:hover { border-color: #444; background: #0a0a0a; }
+  .social-btn svg { width: 15px; height: 15px; stroke: #555; fill: none; stroke-width: 1.5; }
+  .social-btn:hover svg { stroke: #fff; }
+
+  .footer-col h4 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #333;
+    margin-bottom: 1.25rem;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.65rem; }
+  .footer-col ul li a {
+    font-size: 13px;
+    color: #444;
+    text-decoration: none;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+  .footer-col ul li a:hover { color: #fff; }
+
+  .footer-bottom {
+    border-top: 1px solid #0f0f0f;
+    padding-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-copy {
+    font-size: 12px;
+    color: #2a2a2a;
+  }
+  .footer-bottom-links {
+    display: flex;
+    gap: 2rem;
+  }
+  .footer-bottom-links a {
+    font-size: 12px;
+    color: #2a2a2a;
+    text-decoration: none;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+  .footer-bottom-links a:hover { color: #555; }
+
+  /* ─── SCROLL ANIMATIONS ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* ─── CURSOR GLOW ─── */
+  .cursor-glow {
+    position: fixed;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    transition: opacity 0.3s;
+  }
+
+  /* responsive */
+  @media (max-width: 900px) {
+    .features-grid, .pricing-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .stats-strip { grid-template-columns: repeat(2,1fr); }
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 1.5rem; }
+  }
+</style>
+
+<div class="cursor-glow" id="glow"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">VC</div>
+  <div class="nav-links">
+    <a>Home</a>
+    <a>Upload</a>
+    <a>About</a>
+  </div>
+  <button class="nav-cta">Get Started</button>
+</nav>
+
+<div style="height: 60px;"></div>
+
+<!-- ─── FEATURES ─── -->
+<section id="features">
+  <div class="features-header reveal">
+    <div class="section-label">Capabilities</div>
+    <h2 class="section-title">Everything you need.<br><span>Nothing you don't.</span></h2>
+    <p class="section-sub">Built for precision. Powered by intelligence. Designed for the ones who demand more.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </div>
+      <h3>Neural Processing</h3>
+      <p>Real-time semantic mapping across 4,100+ relational nodes with 98.4% confidence scoring.</p>
+      <span class="feature-tag">Core AI</span>
+    </div>
+
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <h3>Semantic Mapping</h3>
+      <p>Cross-references university-specific patterns and maps relational dependencies in milliseconds.</p>
+      <span class="feature-tag">Analysis</span>
+    </div>
+
+    <div class="feature-card reveal reveal-delay-3">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </div>
+      <h3>Voice Synthesis</h3>
+      <p>Vocal synthesizer tuned to examiner frequency. Active session listening with &lt;12ms latency.</p>
+      <span class="feature-tag">Voice</span>
+    </div>
+
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      </div>
+      <h3>Secure Sync</h3>
+      <p>End-to-end encrypted DB sync. Your knowledge graph never leaves your environment.</p>
+      <span class="feature-tag">Security</span>
+    </div>
+
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <h3>Live Monitoring</h3>
+      <p>Stable 12ms latency tracking with real-time CORE_INIT diagnostics and session health.</p>
+      <span class="feature-tag">Monitor</span>
+    </div>
+
+    <div class="feature-card reveal reveal-delay-3">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 012 2v7M11 18H8a2 2 0 01-2-2V9"/></svg>
+      </div>
+      <h3>Integrations</h3>
+      <p>Native connectors for Google Drive, Word, PDF, and GitHub. Your workflow, unified.</p>
+      <span class="feature-tag">Connect</span>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marquee">
+    <span class="marquee-item">Neural Interface</span>
+    <span class="marquee-item">Semantic Mapping</span>
+    <span class="marquee-item">Voice Synthesis</span>
+    <span class="marquee-item">98.4% Confidence</span>
+    <span class="marquee-item">12ms Latency</span>
+    <span class="marquee-item">Secure Sync</span>
+    <span class="marquee-item">Live Monitoring</span>
+    <span class="marquee-item">Multi-Format</span>
+    <span class="marquee-item">Neural Interface</span>
+    <span class="marquee-item">Semantic Mapping</span>
+    <span class="marquee-item">Voice Synthesis</span>
+    <span class="marquee-item">98.4% Confidence</span>
+    <span class="marquee-item">12ms Latency</span>
+    <span class="marquee-item">Secure Sync</span>
+    <span class="marquee-item">Live Monitoring</span>
+    <span class="marquee-item">Multi-Format</span>
+  </div>
+</div>
+
+<!-- ─── PRICING ─── -->
+<section id="pricing">
+  <div class="pricing-header reveal">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Invest in<br><span>your intelligence.</span></h2>
+    <div class="pricing-toggle">
+      <span class="toggle-label active" id="monthly-lbl">Monthly</span>
+      <div class="toggle-switch" id="billing-toggle" onclick="toggleBilling()">
+        <div class="toggle-knob"></div>
+      </div>
+      <span class="toggle-label" id="annual-lbl">Annual <span class="badge-save" id="save-badge" style="display:none">Save 20%</span></span>
+    </div>
+  </div>
+
+  <div class="pricing-grid" id="pricing-grid">
+
+    <div class="plan-card reveal reveal-delay-1" id="card-starter">
+      <div class="plan-badge-ghost"></div>
+      <div class="plan-name">Starter</div>
+      <div class="plan-price-wrap">
+        <span class="plan-currency">$</span>
+        <span class="plan-price" id="price-starter">0</span>
+        <span class="plan-period">/mo</span>
+      </div>
+      <p class="plan-tagline">For curious minds exploring the edge.</p>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li><span class="check"><svg viewBox="0 0 16 16"><polyline points="2 8 6 12 14 4"/></svg></span>50 queries / day</li>
+        <li><span class="check"><svg viewBox="0 0 16 16"><polyline points="2 8 6 12 14 4"/></svg></span>Basic semantic mapping</li>
+        <li><span class="check"><svg viewBox="0 0 16 16"><polyline points="2 8 6 12 14 4"/></svg></span>PDF & Word support</li>
+        <li><span class="check"><svg viewBox="0 0 16 16"><polyline points="2 8 6 12 14 4"/></svg></span>Community access</li>
+      </ul>
+      <button class="plan-btn plan-btn-outline">Get started free</button>
+    </div>
+
+    <div class="plan-card featured reveal reveal-delay-2" id="card-pro">
+      <div class="plan-badge">Most Popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price-wrap">
+        <span class="plan-currency">$</span>
+        <span class="plan-price" id="price-pro">49</span>
+        <span class="plan-period">/mo</span>
+      </div>
+      <p class="plan-tagline">For researchers and academics who demand precision.</p>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li><span class="check"><svg viewBox="0 0 16 16"><polyline points="2 8 6 12 14 4"/></svg></span>Unlimited queries</li>
+        <li><span class="check"><svg viewBox="0 0 16 16"><polyline points="2 8 6 12 14 4"/></svg></span>Full semantic graph (4,100+ nodes)</li>
+        <li><span class="check"><svg viewBox="0 0 16 16"><polyline points="2 8 6 12 14 4"/></svg></span>Voice synthesis & session</li>
+        <li><span class="check"><svg viewBox="0 0 16 16"><polyline points="2 8 6 12 14 4"/></svg></span>GitHub integration</li>
+        <li><span class="check"><svg viewBox="0 0 16 16"><polyline points="2 8 6 12 14 4"/></svg></span>Priority support</li>
+      </ul>
+      <button class="plan-btn plan-btn-filled">Start Pro trial</button>
+    </div>
+
+    <div class="plan-card reveal reveal-delay-3" id="card-enterprise">
+      <div class="plan-badge-ghost"></div>
+      <div class="plan-name">Enterprise</div>
+      <div class="plan-price-wrap">
+        <span class="plan-currency">$</span>
+        <span class="plan-price" id="price-enterprise">199</span>
+        <span class="plan-period">/mo</span>
+      </div>
+      <p class="plan-tagline">For institutions requiring full deployment.</p>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li><span class="check"><svg viewBox="0 0 16 16"><polyline points="2 8 6 12 14 4"/></svg></span>Everything in Pro</li>
+        <li><span class="check"><svg viewBox="0 0 16 16"><polyline points="2 8 6 12 14 4"/></svg></span>On-premise deployment</li>
+        <li><span class="check"><svg viewBox="0 0 16 16"><polyline points="2 8 6 12 14 4"/></svg></span>Custom model fine-tuning</li>
+        <li><span class="check"><svg viewBox="0 0 16 16"><polyline points="2 8 6 12 14 4"/></svg></span>SLA guarantee &amp; SSO</li>
+        <li><span class="check"><svg viewBox="0 0 16 16"><polyline points="2 8 6 12 14 4"/></svg></span>Dedicated engineer</li>
+      </ul>
+      <button class="plan-btn plan-btn-outline">Contact sales</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="reveal">
+    <div class="stat-num" data-target="4102">0</div>
+    <div class="stat-label">Graph nodes</div>
+  </div>
+  <div class="reveal reveal-delay-1">
+    <div class="stat-num" data-target="98">0</div>
+    <div class="stat-label">% Confidence</div>
+  </div>
+  <div class="reveal reveal-delay-2">
+    <div class="stat-num" data-target="12">0</div>
+    <div class="stat-label">ms Latency</div>
+  </div>
+  <div class="reveal reveal-delay-3">
+    <div class="stat-num" data-target="50000">0</div>
+    <div class="stat-label">Active users</div>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand reveal">
+      <div class="logo-wrap">
+        <div class="logo-circle">VC</div>
+        <span class="logo-name">VivaCopilot</span>
+      </div>
+      <p>Neural intelligence for the academic frontier. Ask anything, understand everything.</p>
+      <div class="footer-socials">
+        <a class="social-btn" href="#">
+          <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+        </a>
+        <a class="social-btn" href="#">
+          <svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+        </a>
+        <a class="social-btn" href="#">
+          <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col reveal reveal-delay-1">
+      <h4>Product</h4>
+      <ul>
+        <li><a>Features</a></li>
+        <li><a>Pricing</a></li>
+        <li><a>Changelog</a></li>
+        <li><a>Roadmap</a></li>
+        <li><a>API Docs</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col reveal reveal-delay-2">
+      <h4>Company</h4>
+      <ul>
+        <li><a>About</a></li>
+        <li><a>Blog</a></li>
+        <li><a>Careers</a></li>
+        <li><a>Press</a></li>
+        <li><a>Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col reveal reveal-delay-3">
+      <h4>Legal</h4>
+      <ul>
+        <li><a>Privacy Policy</a></li>
+        <li><a>Terms of Service</a></li>
+        <li><a>Cookie Policy</a></li>
+        <li><a>GDPR</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 VivaCopilot. All rights reserved.</span>
+    <div class="footer-bottom-links">
+      <a>Privacy</a>
+      <a>Terms</a>
+      <a>Status</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // cursor glow
+  const glow = document.getElementById('glow');
+  document.addEventListener('mousemove', e => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top = e.clientY + 'px';
+  });
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // counter animation
+  function animateCounter(el, target, duration) {
+    let start = 0;
+    const step = target / (duration / 16);
+    const timer = setInterval(() => {
+      start = Math.min(start + step, target);
+      el.textContent = Math.floor(start).toLocaleString();
+      if (start >= target) clearInterval(timer);
+    }, 16);
+  }
+  const statNums = document.querySelectorAll('.stat-num[data-target]');
+  const statObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const target = parseInt(e.target.dataset.target);
+        animateCounter(e.target, target, 1500);
+        statObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  statNums.forEach(el => statObserver.observe(el));
+
+  // billing toggle
+  let isAnnual = false;
+  const prices = { starter: 0, pro: 49, enterprise: 199 };
+
+  function toggleBilling() {
+    isAnnual = !isAnnual;
+    const toggle = document.getElementById('billing-toggle');
+    const mLbl = document.getElementById('monthly-lbl');
+    const aLbl = document.getElementById('annual-lbl');
+    const badge = document.getElementById('save-badge');
+
+    toggle.classList.toggle('annual', isAnnual);
+    mLbl.classList.toggle('active', !isAnnual);
+    aLbl.classList.toggle('active', isAnnual);
+    badge.style.display = isAnnual ? 'inline' : 'none';
+
+    const mult = isAnnual ? 0.8 : 1;
+    document.getElementById('price-starter').textContent = Math.round(prices.starter * mult);
+    document.getElementById('price-pro').textContent = Math.round(prices.pro * mult);
+    document.getElementById('price-enterprise').textContent = Math.round(prices.enterprise * mult);
+  }
+
+  // 3D tilt on pricing cards
+  document.querySelectorAll('.plan-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform = `translateY(-6px) scale(1.01) rotateY(${x * 8}deg) rotateX(${-y * 6}deg)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+
+  // feature card micro-animation
+  document.querySelectorAll('.feature-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      card.style.transition = 'background 0.35s, transform 0.3s cubic-bezier(0.34,1.56,0.64,1)';
+      card.style.transform = 'translateY(-3px)';
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+</script>
