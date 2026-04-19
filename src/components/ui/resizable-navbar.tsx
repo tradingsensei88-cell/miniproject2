@@ -86,7 +86,7 @@ export function NavItems({ items }: { items: NavItem[] }) {
         >
           {hovered === idx && (
             <motion.span
-              layoutId={null} // Removed layoutId due to cross-page App Router unmount crashes
+              layoutId={undefined} // Removed layoutId due to cross-page App Router unmount crashes
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
